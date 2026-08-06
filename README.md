@@ -22,6 +22,7 @@ Salesforce MCP Pro currently provides tool categories for:
 - Debug log retrieval and trace-flag management
 - Access operations (permission sets, permission set groups, user creation)
 - Record CRUD and upsert operations
+- Live Salesforce skill discovery from `forcedotcom/sf-skills` (including Flow and OmniStudio-focused skills)
 
 Use your MCP client’s tool browser to see the current live tool catalog.
 
@@ -74,6 +75,7 @@ Key environment variables:
 - `READ_ONLY` (optional)
 - `ENFORCE_PROTECTED_ORG_CONFIRM` (optional, default `true`)
 - `PROTECTED_ORG_PATTERNS` (optional, default `prod,production,live`)
+- `GITHUB_TOKEN` (optional, recommended for higher GitHub API rate limits when using skill-discovery tools)
 
 ## Documentation Map
 
@@ -82,6 +84,7 @@ Key environment variables:
 - Tooling API examples: `docs/tooling-api-examples.md`
 - DX operations examples: `docs/dx-operations-examples.md`
 - CRUD examples: `docs/crud-examples.md`
+- Skills discovery examples: `docs/skills-examples.md`
 
 ## Local Smoke Test
 
