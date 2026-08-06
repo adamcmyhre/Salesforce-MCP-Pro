@@ -3,6 +3,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { registerApexTools } from "./tools/apex.js";
+import { registerChatterTools } from "./tools/chatter.js";
 import { assertNodeVersion, getConfig } from "./config/env.js";
 import { registerCrudTools } from "./tools/crud.js";
 import { registerDataTools } from "./tools/data.js";
@@ -49,6 +50,7 @@ const server = new McpServer(
 registerOrgTools(server);
 registerDataTools(server);
 registerApexTools(server);
+registerChatterTools(server);
 registerCrudTools(server);
 registerDescribeTools(server);
 registerDebugLogTools(server);
@@ -62,8 +64,27 @@ registerUiTools(server);
 registerUserTools(server);
 registerVersionControlTools(server);
 
+async function registerLocalMatrikkelToolsIfPresent() {
+  try {
+    const { access } = await import("node:fs/promises");
+    const { dirname, resolve } = await import("node:path");
+    const { fileURLToPath, pathToFileURL } = await import("node:url");
+    const here = dirname(fileURLToPath(import.meta.url));
+    const localRegister = resolve(here, "..", "local", "matrikkel", "register.js");
+    await access(localRegister);
+    const mod = await import(pathToFileURL(localRegister).href);
+    if (typeof mod.registerMatrikkelTools === "function") {
+      mod.registerMatrikkelTools(server);
+      console.error("Local matrikkel MCP tools registered");
+    }
+  } catch {
+    // local/matrikkel is optional and gitignored
+  }
+}
+
 async function main() {
   assertNodeVersion();
+  await registerLocalMatrikkelToolsIfPresent();
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error("Salesforce MCP Pro is running on stdio");

@@ -19,6 +19,7 @@ Salesforce MCP Pro currently provides tool categories for:
 - 2GP packaging lifecycle operations
 - Metadata deploy/retrieve lifecycle operations
 - Apex testing, anonymous execution, cursor-assisted workflows, and async job operations (schedule/batch)
+- Chatter collaboration tooling for record feeds and group updates
 - LWC and Flow baseline generation (with optional deploy-after-generate)
 - Debug log retrieval and trace-flag management
 - Access operations (permission sets, permission set groups, user creation)
@@ -96,6 +97,7 @@ Key environment variables:
 - Query/search examples: `docs/search-examples.md`
 - Tooling API examples: `docs/tooling-api-examples.md`
 - DX operations examples: `docs/dx-operations-examples.md`
+- Chatter examples: `docs/chatter-examples.md`
 - Packaging examples: `docs/packaging-examples.md`
 - CRUD examples: `docs/crud-examples.md`
 - Skills discovery examples: `docs/skills-examples.md`
