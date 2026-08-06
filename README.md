@@ -17,7 +17,7 @@ Salesforce MCP Pro currently provides tool categories for:
 - SOQL, SOSL, and Named Query API access
 - Tooling API discovery and metadata inspection
 - Metadata deploy/retrieve lifecycle operations
-- Apex testing, anonymous execution, and cursor-assisted workflows
+- Apex testing, anonymous execution, cursor-assisted workflows, and async job operations (schedule/batch)
 - LWC and Flow baseline generation (with optional deploy-after-generate)
 - Debug log retrieval and trace-flag management
 - Access operations (permission sets, permission set groups, user creation)

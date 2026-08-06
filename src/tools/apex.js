@@ -38,6 +38,32 @@ const ExecuteApexCursorQuerySchema = {
   confirm: z.boolean().optional(),
 };
 
+const ScheduleApexJobSchema = {
+  className: z.string().min(1),
+  jobName: z.string().min(1),
+  cronExpression: z.string().min(1),
+  targetOrg: z.string().optional(),
+  directory: z.string().optional(),
+  confirm: z.boolean().optional(),
+};
+
+const UnscheduleApexJobSchema = {
+  jobId: z.string().optional(),
+  jobName: z.string().optional(),
+  abortAllMatches: z.boolean().optional(),
+  targetOrg: z.string().optional(),
+  directory: z.string().optional(),
+  confirm: z.boolean().optional(),
+};
+
+const ExecuteBatchJobSchema = {
+  batchClassName: z.string().min(1),
+  scopeSize: z.number().int().min(1).max(2000).optional(),
+  targetOrg: z.string().optional(),
+  directory: z.string().optional(),
+  confirm: z.boolean().optional(),
+};
+
 function escapeForApexString(value) {
   return String(value).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
 }
@@ -53,6 +79,21 @@ function normalizeIdentifier(value, fallback) {
       `Invalid identifier "${candidate}". Use only letters, numbers, and underscore, starting with a letter or underscore.`
     );
   }
+  return candidate;
+}
+
+function normalizeApexTypeName(value, fieldName) {
+  const candidate = String(value ?? "").trim();
+  if (!candidate) {
+    throw new Error(`${fieldName} is required.`);
+  }
+
+  if (!/^[A-Za-z_][A-Za-z0-9_.]*$/.test(candidate)) {
+    throw new Error(
+      `${fieldName} contains invalid characters. Use an Apex class name (letters, numbers, underscore, optional namespace dot).`
+    );
+  }
+
   return candidate;
 }
 
@@ -164,6 +205,56 @@ while (!done) {
 `;
 }
 
+function buildScheduleApexCode(input) {
+  const className = normalizeApexTypeName(input.className, "className");
+  const jobName = escapeForApexString(input.jobName);
+  const cronExpression = escapeForApexString(input.cronExpression);
+
+  return `String scheduledJobId = System.schedule('${jobName}', '${cronExpression}', new ${className}());
+System.debug('SCHEDULED_JOB_ID=' + scheduledJobId);`;
+}
+
+function buildUnscheduleApexCode(input) {
+  if (input.jobId?.trim()) {
+    const jobId = escapeForApexString(input.jobId.trim());
+    return `System.abortJob('${jobId}');
+System.debug('ABORTED_JOB_ID=${jobId}');`;
+  }
+
+  const jobName = input.jobName?.trim();
+  if (!jobName) {
+    throw new Error("Provide jobId or jobName.");
+  }
+
+  const escapedJobName = escapeForApexString(jobName);
+  const abortAllMatches = input.abortAllMatches === true;
+  const limitClause = abortAllMatches ? "" : " LIMIT 1";
+
+  return `List<CronTrigger> jobsToAbort = [
+    SELECT Id, CronJobDetail.Name
+    FROM CronTrigger
+    WHERE CronJobDetail.Name = '${escapedJobName}'
+      AND State != 'DELETED'
+${limitClause}
+];
+
+Integer aborted = 0;
+for (CronTrigger job : jobsToAbort) {
+    System.abortJob(job.Id);
+    aborted++;
+}
+
+System.debug('ABORTED_COUNT=' + aborted);`;
+}
+
+function buildExecuteBatchApexCode(input) {
+  const batchClassName = normalizeApexTypeName(input.batchClassName, "batchClassName");
+  const scopeSizeArgument = input.scopeSize ? `, ${input.scopeSize}` : "";
+
+  return `Id batchJobId = Database.executeBatch(new ${batchClassName}()${scopeSizeArgument});
+System.debug('BATCH_JOB_ID=' + batchJobId);`;
+}
+
 async function executeAnonymous(connection, apexCode) {
   if (typeof connection.tooling?.executeAnonymous === "function") {
     return connection.tooling.executeAnonymous(apexCode);
@@ -198,6 +289,90 @@ async function executeAnonymousWithSafety(input, toolName, apexCode) {
 }
 
 export function registerApexTools(server) {
+  server.tool(
+    "sf_schedule_apex_job",
+    "Schedule a Schedulable Apex class using a cron expression.",
+    ScheduleApexJobSchema,
+    async (input) => {
+      try {
+        const apexCode = buildScheduleApexCode(input);
+        const { targetOrg, result } = await executeAnonymousWithSafety(
+          input,
+          "sf_schedule_apex_job",
+          apexCode
+        );
+
+        return success({
+          targetOrg,
+          apexCode,
+          result,
+          notes: [
+            "Ensure className implements Schedulable.",
+            "Use sf_unschedule_apex_job with jobId or jobName to abort it later.",
+          ],
+        });
+      } catch (error) {
+        return failure(error.message, error.context ?? null);
+      }
+    }
+  );
+
+  server.tool(
+    "sf_unschedule_apex_job",
+    "Unschedule one or more scheduled jobs by jobId or jobName.",
+    UnscheduleApexJobSchema,
+    async (input) => {
+      try {
+        const apexCode = buildUnscheduleApexCode(input);
+        const { targetOrg, result } = await executeAnonymousWithSafety(
+          input,
+          "sf_unschedule_apex_job",
+          apexCode
+        );
+
+        return success({
+          targetOrg,
+          apexCode,
+          result,
+          notes: [
+            "Provide jobId for a precise abort.",
+            "When only jobName is provided, set abortAllMatches=true to abort every matching schedule.",
+          ],
+        });
+      } catch (error) {
+        return failure(error.message, error.context ?? null);
+      }
+    }
+  );
+
+  server.tool(
+    "sf_execute_batch_job",
+    "Run an Apex batch class immediately via Database.executeBatch.",
+    ExecuteBatchJobSchema,
+    async (input) => {
+      try {
+        const apexCode = buildExecuteBatchApexCode(input);
+        const { targetOrg, result } = await executeAnonymousWithSafety(
+          input,
+          "sf_execute_batch_job",
+          apexCode
+        );
+
+        return success({
+          targetOrg,
+          apexCode,
+          result,
+          notes: [
+            "Ensure batchClassName implements Database.Batchable.",
+            "Batch class must support a no-arg constructor for this tool.",
+          ],
+        });
+      } catch (error) {
+        return failure(error.message, error.context ?? null);
+      }
+    }
+  );
+
   server.tool(
     "sf_execute_anonymous_apex",
     "Execute anonymous Apex in the target org.",

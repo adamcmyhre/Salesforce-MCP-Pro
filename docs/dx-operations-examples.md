@@ -195,6 +195,64 @@ Example:
 }
 ```
 
+## `sf_schedule_apex_job`
+
+Schedule a class that implements `Schedulable`:
+
+```json
+{
+  "targetOrg": "DEFAULT_TARGET_ORG",
+  "className": "NightlyDataCleanupJob",
+  "jobName": "Nightly Data Cleanup",
+  "cronExpression": "0 0 2 * * ?"
+}
+```
+
+Schedule in a protected org (requires confirm):
+
+```json
+{
+  "targetOrg": "prod-main",
+  "className": "NightlyDataCleanupJob",
+  "jobName": "Nightly Data Cleanup",
+  "cronExpression": "0 0 2 * * ?",
+  "confirm": true
+}
+```
+
+## `sf_unschedule_apex_job`
+
+Unschedule by exact Salesforce job id:
+
+```json
+{
+  "targetOrg": "DEFAULT_TARGET_ORG",
+  "jobId": "08eXXXXXXXXXXXXXXX"
+}
+```
+
+Unschedule by job name (all matching schedules):
+
+```json
+{
+  "targetOrg": "DEFAULT_TARGET_ORG",
+  "jobName": "Nightly Data Cleanup",
+  "abortAllMatches": true
+}
+```
+
+## `sf_execute_batch_job`
+
+Run a batch class immediately (class must support no-arg constructor):
+
+```json
+{
+  "targetOrg": "DEFAULT_TARGET_ORG",
+  "batchClassName": "AccountRecalculationBatch",
+  "scopeSize": 100
+}
+```
+
 ## `sf_list_debug_logs`
 
 ```json
