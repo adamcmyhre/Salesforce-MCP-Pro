@@ -3,6 +3,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { registerApexTools } from "./tools/apex.js";
+import { registerAgentforceTools } from "./tools/agentforce.js";
 import { registerChatterTools } from "./tools/chatter.js";
 import { assertNodeVersion, getConfig } from "./config/env.js";
 import { registerCrudTools } from "./tools/crud.js";
@@ -50,6 +51,7 @@ const server = new McpServer(
 registerOrgTools(server);
 registerDataTools(server);
 registerApexTools(server);
+registerAgentforceTools(server);
 registerChatterTools(server);
 registerCrudTools(server);
 registerDescribeTools(server);

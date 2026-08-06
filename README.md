@@ -15,6 +15,7 @@ Salesforce MCP Pro currently provides tool categories for:
 
 - Org discovery and environment resolution
 - SOQL, SOSL, and Named Query API access
+- Agentforce lifecycle and programmatic preview tooling
 - Tooling API discovery and metadata inspection
 - 2GP packaging lifecycle operations
 - Metadata deploy/retrieve lifecycle operations
@@ -95,6 +96,7 @@ Key environment variables:
 
 - Cutover guide: `docs/cutover.md`
 - Query/search examples: `docs/search-examples.md`
+- Agentforce examples: `docs/agentforce-examples.md`
 - Tooling API examples: `docs/tooling-api-examples.md`
 - DX operations examples: `docs/dx-operations-examples.md`
 - Chatter examples: `docs/chatter-examples.md`
