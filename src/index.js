@@ -14,6 +14,7 @@ import { registerOrgTools } from "./tools/orgs.js";
 import { registerSkillsTools } from "./tools/skills.js";
 import { registerTestingTools } from "./tools/testing.js";
 import { registerToolingApiTools } from "./tools/tooling.js";
+import { registerUiTools } from "./tools/ui.js";
 import { registerUserTools } from "./tools/users.js";
 
 function buildDescription() {
@@ -54,6 +55,7 @@ registerSkillsTools(server);
 registerMetadataTools(server);
 registerTestingTools(server);
 registerToolingApiTools(server);
+registerUiTools(server);
 registerUserTools(server);
 
 async function main() {

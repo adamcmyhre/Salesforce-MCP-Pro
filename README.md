@@ -5,7 +5,7 @@ Salesforce MCP Pro is a high-performance Node 22 MCP server for Salesforce devel
 ## Why Salesforce MCP Pro
 
 - Fast startup and reliable local execution on Windows/macOS
-- More than 30 Salesforce-focused tools across DX and data domains
+- More than 50 Salesforce-focused tools across DX, data, and UI automation domains
 - Hybrid backend (Salesforce CLI + jsforce) for broad coverage and practical performance
 - Built-in operational safety controls for production-like orgs
 
@@ -23,6 +23,7 @@ Salesforce MCP Pro currently provides tool categories for:
 - Access operations (permission sets, permission set groups, user creation)
 - Record CRUD and upsert operations
 - Live Salesforce skill discovery from `forcedotcom/sf-skills` (including Flow and OmniStudio-focused skills)
+- Playwright-based UI automation for non-API tasks (with reusable flow definitions)
 
 Use your MCP client’s tool browser to see the current live tool catalog.
 
@@ -77,6 +78,16 @@ Key environment variables:
 - `PROTECTED_ORG_PATTERNS` (optional, default `prod,production,live`)
 - `GITHUB_TOKEN` (optional, recommended for higher GitHub API rate limits when using skill-discovery tools)
 
+## UI Automation Notes
+
+- UI tools use Playwright and are designed for deterministic, definition-driven browser automation.
+- `ui_session_start` defaults to `headless: true` for normal runs.
+- Use `slowMoMs` during debugging:
+  - `0` for normal speed
+  - `100-250` for human-observable debugging
+- For visual troubleshooting, set `headless: false` and capture screenshots with `ui_screenshot`.
+- Ensure Playwright browser binaries are installed in the runtime environment used by this server.
+
 ## Documentation Map
 
 - Cutover guide: `docs/cutover.md`
@@ -85,6 +96,8 @@ Key environment variables:
 - DX operations examples: `docs/dx-operations-examples.md`
 - CRUD examples: `docs/crud-examples.md`
 - Skills discovery examples: `docs/skills-examples.md`
+- UI automation roadmap: `docs/ui-roadmap.md`
+- UI automation examples: `docs/ui-examples.md`
 
 ## Local Smoke Test
 

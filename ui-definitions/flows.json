@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "pages": {
+    "setupPlatformCache": {
+      "urlPath": "/lightning/setup/PlatformCache/home",
+      "elements": {
+        "restartCacheButton": "text=Recalculate",
+        "confirmRestartButton": "button:has-text('Confirm'), button:has-text('OK'), input[type='submit'][value='OK'], text=OK"
+      }
+    },
+    "recordFieldEditor": {
+      "urlPathTemplate": "/lightning/r/{objectApiName}/{recordId}/view",
+      "elements": {
+        "editButton": "button:has-text('Edit')",
+        "saveButton": "button:has-text('Save')",
+        "cancelButton": "button:has-text('Cancel')"
+      }
+    }
+  },
+  "flows": {
+    "restart_cache": {
+      "description": "Open setup cache page and trigger a cache restart/clear action.",
+      "requiresConfirm": true,
+      "steps": [
+        {
+          "type": "navigate",
+          "page": "setupPlatformCache"
+        },
+        {
+          "type": "click",
+          "page": "setupPlatformCache",
+          "element": "restartCacheButton"
+        },
+        {
+          "type": "optionalClick",
+          "page": "setupPlatformCache",
+          "element": "confirmRestartButton"
+        }
+      ]
+    },
+    "clear_sensitive_field": {
+      "description": "Navigate to a record, clear a field value, and save.",
+      "requiresConfirm": true,
+      "requiredVariables": [
+        "objectApiName",
+        "recordId",
+        "fieldSelector"
+      ],
+      "steps": [
+        {
+          "type": "navigate",
+          "page": "recordFieldEditor"
+        },
+        {
+          "type": "optionalClick",
+          "page": "recordFieldEditor",
+          "element": "editButton"
+        },
+        {
+          "type": "fill",
+          "selectorVar": "fieldSelector",
+          "value": ""
+        },
+        {
+          "type": "click",
+          "page": "recordFieldEditor",
+          "element": "saveButton"
+        }
+      ]
+    }
+  }
+}
