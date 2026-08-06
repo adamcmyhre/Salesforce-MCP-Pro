@@ -12,6 +12,7 @@ import { registerGenerationTools } from "./tools/generation.js";
 import { registerMetadataTools } from "./tools/metadata.js";
 import { registerOrgTools } from "./tools/orgs.js";
 import { registerTestingTools } from "./tools/testing.js";
+import { registerToolingApiTools } from "./tools/tooling.js";
 import { registerUserTools } from "./tools/users.js";
 
 function buildDescription() {
@@ -50,6 +51,7 @@ registerDebugLogTools(server);
 registerGenerationTools(server);
 registerMetadataTools(server);
 registerTestingTools(server);
+registerToolingApiTools(server);
 registerUserTools(server);
 
 async function main() {
