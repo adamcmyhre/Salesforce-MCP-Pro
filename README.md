@@ -24,6 +24,7 @@ Salesforce MCP Pro currently provides tool categories for:
 - Record CRUD and upsert operations
 - Live Salesforce skill discovery from `forcedotcom/sf-skills` (including Flow and OmniStudio-focused skills)
 - Playwright-based UI automation for non-API tasks (with reusable flow definitions)
+- Version-control insights for Git-backed Salesforce projects
 
 Use your MCP client’s tool browser to see the current live tool catalog.
 
@@ -98,6 +99,7 @@ Key environment variables:
 - Skills discovery examples: `docs/skills-examples.md`
 - UI automation roadmap: `docs/ui-roadmap.md`
 - UI automation examples: `docs/ui-examples.md`
+- Version control examples: `docs/version-control-examples.md`
 
 ## Local Smoke Test
 

@@ -16,6 +16,7 @@ import { registerTestingTools } from "./tools/testing.js";
 import { registerToolingApiTools } from "./tools/tooling.js";
 import { registerUiTools } from "./tools/ui.js";
 import { registerUserTools } from "./tools/users.js";
+import { registerVersionControlTools } from "./tools/versionControl.js";
 
 function buildDescription() {
   const config = getConfig();
@@ -57,6 +58,7 @@ registerTestingTools(server);
 registerToolingApiTools(server);
 registerUiTools(server);
 registerUserTools(server);
+registerVersionControlTools(server);
 
 async function main() {
   assertNodeVersion();
