@@ -16,6 +16,7 @@ Salesforce MCP Pro currently provides tool categories for:
 - Org discovery and environment resolution
 - SOQL, SOSL, and Named Query API access
 - Tooling API discovery and metadata inspection
+- 2GP packaging lifecycle operations
 - Metadata deploy/retrieve lifecycle operations
 - Apex testing, anonymous execution, cursor-assisted workflows, and async job operations (schedule/batch)
 - LWC and Flow baseline generation (with optional deploy-after-generate)
@@ -23,7 +24,7 @@ Salesforce MCP Pro currently provides tool categories for:
 - Access operations (permission sets, permission set groups, user creation)
 - Record CRUD and upsert operations
 - Live Salesforce skill discovery from `forcedotcom/sf-skills` (including Flow and OmniStudio-focused skills)
-- Playwright-based UI automation for non-API tasks (with reusable flow definitions)
+- Playwright-based UI automation for non-API tasks, including tooling to build automated test flows (with reusable flow definitions)
 - Version-control insights for Git-backed Salesforce projects
 
 Use your MCP client’s tool browser to see the current live tool catalog.
@@ -95,6 +96,7 @@ Key environment variables:
 - Query/search examples: `docs/search-examples.md`
 - Tooling API examples: `docs/tooling-api-examples.md`
 - DX operations examples: `docs/dx-operations-examples.md`
+- Packaging examples: `docs/packaging-examples.md`
 - CRUD examples: `docs/crud-examples.md`
 - Skills discovery examples: `docs/skills-examples.md`
 - UI automation roadmap: `docs/ui-roadmap.md`
