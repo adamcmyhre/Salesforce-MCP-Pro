@@ -14,7 +14,7 @@ Salesforce MCP Pro is a high-performance Node 22 MCP server for Salesforce devel
 Salesforce MCP Pro currently provides tool categories for:
 
 - Org discovery and environment resolution
-- SOQL, SOSL, and Named Query API access
+- SOQL, SOSL, Named Query API, user access evaluation, and field nillability checks
 - Agentforce lifecycle and programmatic preview tooling
 - Tooling API discovery and metadata inspection
 - 2GP packaging lifecycle operations

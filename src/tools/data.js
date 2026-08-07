@@ -33,7 +33,162 @@ const NamedQuerySchema = {
   directory: z.string().optional(),
 };
 
+const UserRecordAccessSchema = {
+  userId: z.string().min(1),
+  recordIds: z.array(z.string().min(1)).min(1).max(200),
+  targetOrg: z.string().optional(),
+  directory: z.string().optional(),
+};
+
+const UserObjectCreateAccessSchema = {
+  userId: z.string().min(1),
+  objectApiNames: z.array(z.string().min(1)).min(1).max(200),
+  targetOrg: z.string().optional(),
+  directory: z.string().optional(),
+};
+
+const SALESFORCE_ID_REGEX = /^[A-Za-z0-9]{15}(?:[A-Za-z0-9]{3})?$/;
+const OBJECT_API_NAME_REGEX = /^[A-Za-z][A-Za-z0-9_]*(?:__[A-Za-z0-9]+)?$/;
+
+function ensureSalesforceId(value, label) {
+  const candidate = String(value).trim();
+  if (!SALESFORCE_ID_REGEX.test(candidate)) {
+    throw new Error(
+      `Invalid ${label} "${value}". Expected a 15- or 18-character Salesforce ID.`
+    );
+  }
+  return candidate;
+}
+
+function escapeForSoql(value) {
+  return String(value).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+}
+
+function normalizeRecordIds(recordIds) {
+  const unique = new Set();
+  for (const recordId of recordIds) {
+    unique.add(ensureSalesforceId(recordId, "recordId"));
+  }
+  return [...unique];
+}
+
+function normalizeObjectApiNames(objectApiNames) {
+  const unique = new Set();
+  for (const objectApiName of objectApiNames) {
+    const candidate = String(objectApiName).trim();
+    if (!OBJECT_API_NAME_REGEX.test(candidate)) {
+      throw new Error(
+        `Invalid objectApiName "${objectApiName}". Expected a Salesforce object API name like Account or Custom_Object__c.`
+      );
+    }
+    unique.add(candidate);
+  }
+  return [...unique];
+}
+
 export function registerDataTools(server) {
+  server.tool(
+    "sf_get_user_record_access",
+    "Check read/edit/delete/transfer access for a single user across up to 200 records.",
+    UserRecordAccessSchema,
+    async (input) => {
+      try {
+        const { targetOrg, connection } = await getJsforceConnection(input.targetOrg, {
+          cwd: input.directory,
+        });
+        assertOrgAccess(targetOrg);
+
+        const userId = ensureSalesforceId(input.userId, "userId");
+        const recordIds = normalizeRecordIds(input.recordIds);
+        const inClause = recordIds.map((id) => `'${escapeForSoql(id)}'`).join(", ");
+        const soql =
+          "SELECT RecordId, HasReadAccess, HasEditAccess, HasDeleteAccess, HasTransferAccess " +
+          "FROM UserRecordAccess " +
+          `WHERE UserId = '${escapeForSoql(userId)}' AND RecordId IN (${inClause})`;
+
+        const result = await connection.query(soql);
+        const accessByRecordId = Object.fromEntries(
+          (result.records ?? []).map((record) => [
+            record.RecordId,
+            {
+              hasReadAccess: Boolean(record.HasReadAccess),
+              hasEditAccess: Boolean(record.HasEditAccess),
+              hasDeleteAccess: Boolean(record.HasDeleteAccess),
+              hasTransferAccess: Boolean(record.HasTransferAccess),
+            },
+          ])
+        );
+
+        return success({
+          targetOrg,
+          userId,
+          requestedRecordCount: input.recordIds.length,
+          uniqueRecordCount: recordIds.length,
+          resolvedRecordCount: result.totalSize ?? Object.keys(accessByRecordId).length,
+          accessByRecordId,
+          notes: [
+            "This query evaluates sharing and permissions at runtime via UserRecordAccess.",
+            "Salesforce requires exactly one UserId filter and supports up to 200 RecordIds.",
+          ],
+        });
+      } catch (error) {
+        return failure(error.message, error.context ?? null);
+      }
+    }
+  );
+
+  server.tool(
+    "sf_get_user_object_create_access",
+    "Check object-level create permission for a single user across one or more objects.",
+    UserObjectCreateAccessSchema,
+    async (input) => {
+      try {
+        const { targetOrg, connection } = await getJsforceConnection(input.targetOrg, {
+          cwd: input.directory,
+        });
+        assertOrgAccess(targetOrg);
+
+        const userId = ensureSalesforceId(input.userId, "userId");
+        const objectApiNames = normalizeObjectApiNames(input.objectApiNames);
+        const requestedSet = new Set(objectApiNames);
+        const soql =
+          "SELECT EntityDefinition.QualifiedApiName, IsCreatable " +
+          "FROM UserEntityAccess " +
+          `WHERE UserId = '${escapeForSoql(userId)}'`;
+        const result = await connection.tooling.query(soql);
+
+        const objectCreateAccessByObject = {};
+        for (const row of result.records ?? []) {
+          const apiName = row.EntityDefinition?.QualifiedApiName;
+          if (!apiName || !requestedSet.has(apiName)) {
+            continue;
+          }
+          objectCreateAccessByObject[apiName] = Boolean(row.IsCreatable);
+        }
+
+        const unresolvedObjects = objectApiNames.filter(
+          (apiName) => !(apiName in objectCreateAccessByObject)
+        );
+
+        return success({
+          targetOrg,
+          userId,
+          requestedObjectCount: input.objectApiNames.length,
+          uniqueObjectCount: objectApiNames.length,
+          resolvedObjectCount: Object.keys(objectCreateAccessByObject).length,
+          objectCreateAccessByObject,
+          unresolvedObjects,
+          notes: [
+            "Uses UserEntityAccess for runtime object-level access evaluation.",
+            "Returns unresolved objects when no UserEntityAccess row is returned for a requested object.",
+          ],
+        });
+      } catch (error) {
+        return failure(error.message, error.context ?? null);
+      }
+    }
+  );
+
   server.tool(
     "sf_query_org",
     "Run a SOQL query against a Salesforce org.",

@@ -13,6 +13,38 @@ Query records with SOQL.
 }
 ```
 
+## `sf_get_user_record_access`
+
+Evaluate record access rights for one user across up to 200 records:
+
+```json
+{
+  "userId": "005XXXXXXXXXXXXXXX",
+  "recordIds": [
+    "001XXXXXXXXXXXXXXX",
+    "001YYYYYYYYYYYYYYY",
+    "500ZZZZZZZZZZZZZZZ"
+  ],
+  "targetOrg": "DEFAULT_TARGET_ORG"
+}
+```
+
+## `sf_get_user_object_create_access`
+
+Evaluate object-level create permission for one user across specific objects:
+
+```json
+{
+  "userId": "005XXXXXXXXXXXXXXX",
+  "objectApiNames": [
+    "Account",
+    "Case",
+    "Custom_Object__c"
+  ],
+  "targetOrg": "DEFAULT_TARGET_ORG"
+}
+```
+
 ## `sf_query_org_paginated`
 
 First page:
@@ -68,6 +100,18 @@ Describe object schema and fields.
 ```json
 {
   "objectName": "Account",
+  "targetOrg": "DEFAULT_TARGET_ORG"
+}
+```
+
+## `sf_is_field_nillable`
+
+Check whether a field can be null:
+
+```json
+{
+  "objectName": "Account",
+  "fieldName": "ParentId",
   "targetOrg": "DEFAULT_TARGET_ORG"
 }
 ```
