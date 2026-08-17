@@ -20,6 +20,7 @@ import { registerToolingApiTools } from "./tools/tooling.js";
 import { registerUiTools } from "./tools/ui.js";
 import { registerUserTools } from "./tools/users.js";
 import { registerVersionControlTools } from "./tools/versionControl.js";
+import { withObservedToolExecution } from "./lib/observability.js";
 
 function buildDescription() {
   const config = getConfig();
@@ -47,6 +48,15 @@ const server = new McpServer(
     },
   }
 );
+
+const rawRegisterTool = server.tool.bind(server);
+server.tool = (name, description, inputSchema, handler) =>
+  rawRegisterTool(
+    name,
+    description,
+    inputSchema,
+    withObservedToolExecution(name, handler)
+  );
 
 registerOrgTools(server);
 registerDataTools(server);

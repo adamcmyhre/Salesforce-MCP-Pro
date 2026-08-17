@@ -8,6 +8,7 @@ Salesforce MCP Pro is a high-performance Node 22 MCP server for Salesforce devel
 - More than 50 Salesforce-focused tools across DX, data, and UI automation domains
 - Hybrid backend (Salesforce CLI + jsforce) for broad coverage and practical performance
 - Built-in operational safety controls for production-like orgs
+- Structured stderr observability with per-tool request IDs, timing, org alias, and error classification
 
 ## Capability Overview
 
