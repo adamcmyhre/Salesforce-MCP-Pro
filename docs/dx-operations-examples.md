@@ -2,6 +2,16 @@
 
 These examples cover deployment lifecycle and debug-log operations.
 
+## `sf_get_default_scratch_org`
+
+Get the default scratch org for the current CLI context:
+
+```json
+{
+  "directory": "C:\\Repos\\your-project"
+}
+```
+
 ## `sf_generate_lwc_component`
 
 ```json
