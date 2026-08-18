@@ -5,7 +5,7 @@ Salesforce MCP Pro is a high-performance Node 22 MCP server for Salesforce devel
 ## Why Salesforce MCP Pro
 
 - Fast startup and reliable local execution on Windows/macOS
-- More than 50 Salesforce-focused tools across DX, data, and UI automation domains
+- More than 75 Salesforce-focused tools across DX, data, and UI automation domains
 - Hybrid backend (Salesforce CLI + jsforce) for broad coverage and practical performance
 - Built-in operational safety controls for production-like orgs
 - Structured stderr observability with per-tool request IDs, timing, org alias, and error classification
@@ -27,6 +27,7 @@ Salesforce MCP Pro currently provides tool categories for:
 - Access operations (permission sets, permission set groups, user creation)
 - Record CRUD and upsert operations
 - Live Salesforce skill discovery from `forcedotcom/sf-skills` (including Flow and OmniStudio-focused skills)
+- Live LWC recipe discovery from `trailheadapps/lwc-recipes`
 - Playwright-based UI automation for non-API tasks, including tooling to build automated test flows (with reusable flow definitions)
 - Version-control insights for Git-backed Salesforce projects
 
@@ -104,6 +105,7 @@ Key environment variables:
 - Packaging examples: `docs/packaging-examples.md`
 - CRUD examples: `docs/crud-examples.md`
 - Skills discovery examples: `docs/skills-examples.md`
+- LWC recipes examples: `docs/lwc-recipes-examples.md`
 - UI automation roadmap: `docs/ui-roadmap.md`
 - UI automation examples: `docs/ui-examples.md`
 - Version control examples: `docs/version-control-examples.md`
