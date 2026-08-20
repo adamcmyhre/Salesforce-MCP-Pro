@@ -22,6 +22,16 @@ Get current org limits and consumption snapshot:
 }
 ```
 
+## `sf_whoami`
+
+Get current org identity and connection context:
+
+```json
+{
+  "targetOrg": "DEFAULT_TARGET_ORG"
+}
+```
+
 ## `sf_generate_lwc_component`
 
 ```json

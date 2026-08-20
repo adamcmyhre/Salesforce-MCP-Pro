@@ -20,6 +20,11 @@ const GetOrgLimitsSchema = {
   directory: z.string().optional(),
 };
 
+const WhoAmISchema = {
+  targetOrg: z.string().optional(),
+  directory: z.string().optional(),
+};
+
 function normalizeScratchOrgEntry(entry) {
   return {
     username: entry.username ?? entry.usernameOrAlias ?? null,
@@ -69,6 +74,17 @@ function normalizeLimits(rawLimits) {
   });
 
   return entries;
+}
+
+function sanitizeOrgDisplay(displayResult) {
+  if (!displayResult || typeof displayResult !== "object") {
+    return {};
+  }
+
+  const clone = { ...displayResult };
+  delete clone.accessToken;
+  delete clone.sfdxAuthUrl;
+  return clone;
 }
 
 export function registerOrgTools(server) {
@@ -164,6 +180,40 @@ export function registerOrgTools(server) {
           limits,
           normalized,
           mostConsumed: normalized.slice(0, 10),
+        });
+      } catch (error) {
+        return failure(error.message, error.context ?? null);
+      }
+    }
+  );
+
+  server.tool(
+    "sf_whoami",
+    "Return current Salesforce org identity and connection context.",
+    WhoAmISchema,
+    async ({ targetOrg, directory }) => {
+      try {
+        const identity = await resolveOrgIdentity(targetOrg, {
+          cwd: directory,
+        });
+        assertOrgAccess(identity.usernameOrAlias);
+
+        const display = await execSfJson(
+          ["org", "display", "--target-org", identity.usernameOrAlias, "--verbose"],
+          { cwd: directory }
+        );
+        const result = sanitizeOrgDisplay(display?.result ?? {});
+
+        return success({
+          ...identity,
+          loginUrl: result.loginUrl ?? null,
+          connectedStatus: result.connectedStatus ?? null,
+          apiVersion: result.apiVersion ?? null,
+          instanceApiVersion: result.instanceApiVersion ?? null,
+          edition: result.edition ?? null,
+          createdBy: result.createdBy ?? null,
+          expiryDate: result.expirationDate ?? null,
+          result,
         });
       } catch (error) {
         return failure(error.message, error.context ?? null);

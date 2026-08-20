@@ -104,6 +104,45 @@ Describe object schema and fields.
 }
 ```
 
+## `sf_describe_field`
+
+Describe one field with detailed metadata:
+
+```json
+{
+  "objectName": "Account",
+  "fieldName": "ParentId",
+  "targetOrg": "DEFAULT_TARGET_ORG"
+}
+```
+
+## `sf_list_object_fields`
+
+List common editable fields:
+
+```json
+{
+  "objectName": "Account",
+  "isCreateable": true,
+  "isUpdateable": true,
+  "isNillable": true,
+  "limit": 100,
+  "targetOrg": "DEFAULT_TARGET_ORG"
+}
+```
+
+List picklist-related fields by name filter:
+
+```json
+{
+  "objectName": "Case",
+  "nameContains": "Status",
+  "fieldType": "picklist",
+  "includeCalculated": false,
+  "targetOrg": "DEFAULT_TARGET_ORG"
+}
+```
+
 ## `sf_is_field_nillable`
 
 Check whether a field can be null:
