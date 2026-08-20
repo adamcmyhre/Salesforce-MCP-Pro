@@ -17,7 +17,7 @@ Salesforce MCP Pro currently provides tool categories for:
 - Org discovery and environment resolution
 - SOQL, SOSL, Named Query API, user access evaluation, and field nillability checks
 - Agentforce lifecycle and programmatic preview tooling
-- Tooling API discovery and metadata inspection
+- Tooling API discovery, metadata inspection, and dependency impact analysis
 - 2GP packaging lifecycle operations
 - Metadata deploy/retrieve lifecycle operations
 - Apex testing, anonymous execution, cursor-assisted workflows, and async job operations (schedule/batch)
