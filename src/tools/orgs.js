@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { assertOrgAccess } from "../config/permissions.js";
 import { failure, success } from "../lib/respond.js";
+import { getJsforceConnection } from "../jsforce/connection.js";
 import { execSfJson } from "../sf/execSf.js";
 import { resolveOrgIdentity } from "../sf/resolveOrg.js";
 
@@ -11,6 +12,11 @@ const GetUsernameSchema = {
 };
 
 const GetDefaultScratchOrgSchema = {
+  directory: z.string().optional(),
+};
+
+const GetOrgLimitsSchema = {
+  targetOrg: z.string().optional(),
   directory: z.string().optional(),
 };
 
@@ -38,6 +44,31 @@ function findScratchByIdentity(scratchOrgs, identity) {
     scratchOrgs.find((entry) => entry.alias?.toLowerCase() === key) ??
     null
   );
+}
+
+function normalizeLimits(rawLimits) {
+  const entries = Object.entries(rawLimits ?? {}).map(([name, payload]) => {
+    const max = Number(payload?.Max ?? 0);
+    const remaining = Number(payload?.Remaining ?? 0);
+    const used = Math.max(max - remaining, 0);
+    const usedPercent = max > 0 ? Number(((used / max) * 100).toFixed(2)) : null;
+
+    return {
+      name,
+      max,
+      remaining,
+      used,
+      usedPercent,
+    };
+  });
+
+  entries.sort((a, b) => {
+    const aScore = a.usedPercent ?? -1;
+    const bScore = b.usedPercent ?? -1;
+    return bScore - aScore || a.name.localeCompare(b.name);
+  });
+
+  return entries;
 }
 
 export function registerOrgTools(server) {
@@ -102,6 +133,37 @@ export function registerOrgTools(server) {
             "No scratch org matched the current default target org. Set a default scratch org with `sf config set target-org=<alias>`.",
           defaultTargetOrg: identity,
           scratchOrgCount: scratchOrgs.length,
+        });
+      } catch (error) {
+        return failure(error.message, error.context ?? null);
+      }
+    }
+  );
+
+  server.tool(
+    "sf_get_org_limits",
+    "Get current Salesforce org limits and usage snapshot.",
+    GetOrgLimitsSchema,
+    async ({ targetOrg, directory }) => {
+      try {
+        const { targetOrg: resolvedTargetOrg, connection } = await getJsforceConnection(
+          targetOrg,
+          {
+            cwd: directory,
+          }
+        );
+        assertOrgAccess(resolvedTargetOrg);
+
+        const limitsPath = `/services/data/v${connection.version}/limits`;
+        const limits = await connection.request(limitsPath);
+        const normalized = normalizeLimits(limits);
+
+        return success({
+          targetOrg: resolvedTargetOrg,
+          apiVersion: connection.version,
+          limits,
+          normalized,
+          mostConsumed: normalized.slice(0, 10),
         });
       } catch (error) {
         return failure(error.message, error.context ?? null);

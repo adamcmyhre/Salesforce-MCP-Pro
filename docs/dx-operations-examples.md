@@ -12,6 +12,16 @@ Get the default scratch org for the current CLI context:
 }
 ```
 
+## `sf_get_org_limits`
+
+Get current org limits and consumption snapshot:
+
+```json
+{
+  "targetOrg": "DEFAULT_TARGET_ORG"
+}
+```
+
 ## `sf_generate_lwc_component`
 
 ```json
