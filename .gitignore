@@ -12,3 +12,6 @@ artifacts/
 
 # Local-only agent modules (not for remote / PR)
 local/
+
+# Local scratch notes (not committed)
+docs/_local/data360-hosted-mcp-notes.md

@@ -22,6 +22,7 @@ Salesforce MCP Pro currently provides tool categories for:
 - SOQL, SOSL, Apex Cursors, Named Query API, DML operations
 - Apex testing, anonymous execution and async job operations (schedule/batch)
 - Chatter collaboration tooling for record feeds and group updates
+- Nebula Logger wrappers for namespace-aware log and tag queries
 - LWC and Flow generation
 - Multi-Framework support: GraphQL queries and UIBundle scaffold/list/build/deploy workflows
 - Create and publish Platform Events
@@ -112,6 +113,7 @@ Key environment variables:
 - Trailhead examples: `docs/trailhead-examples.md`
 - UI automation examples: `docs/ui-examples.md`
 - Version control examples: `docs/version-control-examples.md`
+- Nebula Logger examples: `docs/nebula-examples.md`
 
 ## Local Smoke Test
 
