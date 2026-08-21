@@ -23,6 +23,7 @@ Salesforce MCP Pro currently provides tool categories for:
 - Apex testing, anonymous execution and async job operations (schedule/batch)
 - Chatter collaboration tooling for record feeds and group updates
 - LWC and Flow generation
+- Multi-Framework support: GraphQL queries and UIBundle scaffold/list/build/deploy workflows
 - Create and publish Platform Events
 - Debug log retrieval and trace-flag management
 - Access operations (permission sets, permission set groups, user creation)
@@ -107,6 +108,7 @@ Key environment variables:
 - CRUD examples: `docs/crud-examples.md`
 - Skills discovery examples: `docs/skills-examples.md`
 - LWC recipes examples: `docs/lwc-recipes-examples.md`
+- Multi-Framework examples: `docs/multiframework-examples.md`
 - Trailhead examples: `docs/trailhead-examples.md`
 - UI automation examples: `docs/ui-examples.md`
 - Version control examples: `docs/version-control-examples.md`
