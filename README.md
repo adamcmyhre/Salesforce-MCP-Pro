@@ -98,7 +98,6 @@ Key environment variables:
 
 ## Documentation Map
 
-- Cutover guide: `docs/cutover.md`
 - Query/search examples: `docs/search-examples.md`
 - Agentforce examples: `docs/agentforce-examples.md`
 - Tooling API examples: `docs/tooling-api-examples.md`
@@ -109,7 +108,6 @@ Key environment variables:
 - Skills discovery examples: `docs/skills-examples.md`
 - LWC recipes examples: `docs/lwc-recipes-examples.md`
 - Trailhead examples: `docs/trailhead-examples.md`
-- UI automation roadmap: `docs/ui-roadmap.md`
 - UI automation examples: `docs/ui-examples.md`
 - Version control examples: `docs/version-control-examples.md`
 
