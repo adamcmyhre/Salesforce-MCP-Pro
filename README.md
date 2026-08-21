@@ -15,22 +15,22 @@ Salesforce MCP Pro is a high-performance Node 22 MCP server for Salesforce devel
 Salesforce MCP Pro currently provides tool categories for:
 
 - Org discovery and environment resolution
-- SOQL, SOSL, Named Query API, user access evaluation, and field nillability checks
 - Agentforce lifecycle and programmatic preview tooling
 - Tooling API discovery, metadata inspection, and dependency impact analysis
+- Metadata API deploy/retrieve lifecycle operations
 - 2GP packaging lifecycle operations
-- Metadata deploy/retrieve lifecycle operations
-- Apex testing, anonymous execution, cursor-assisted workflows, and async job operations (schedule/batch)
+- SOQL, SOSL, Apex Cursors, Named Query API, DML operations
+- Apex testing, anonymous execution and async job operations (schedule/batch)
 - Chatter collaboration tooling for record feeds and group updates
-- LWC and Flow baseline generation (with optional deploy-after-generate)
+- LWC and Flow generation
+- Create and publish Platform Events
 - Debug log retrieval and trace-flag management
 - Access operations (permission sets, permission set groups, user creation)
-- Record CRUD and upsert operations
 - Live Salesforce skill discovery from `forcedotcom/sf-skills` (including Flow and OmniStudio-focused skills)
 - Live LWC recipe discovery from `trailheadapps/lwc-recipes`
-- Trailhead catalog search and content fetch via public Trailhead MCP
-- Playwright-based UI automation for non-API tasks, including tooling to build automated test flows (with reusable flow definitions)
-- Version-control insights for Git-backed Salesforce projects
+- Live Trailhead catalog search and content fetch via public Trailhead MCP `mcp.trailhead.salesforce.com`
+- Playwright-based UI automation for non-API tasks, including tooling to build and run test automation
+- Support for Git-backed Salesforce projects
 
 Use your MCP client’s tool browser to see the current live tool catalog.
 Trailhead-prefixed tools (`sf_trailhead_*`) call the external Trailhead MCP endpoint and return Trailhead server capabilities/content, not the full local Salesforce MCP Pro tool catalog.

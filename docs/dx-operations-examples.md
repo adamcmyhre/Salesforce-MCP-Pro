@@ -22,6 +22,83 @@ Get current org limits and consumption snapshot:
 }
 ```
 
+## `sf_publish_platform_event`
+
+Publish a single platform event:
+
+```json
+{
+  "targetOrg": "DEFAULT_TARGET_ORG",
+  "eventApiName": "Order_Event__e",
+  "payload": {
+    "OrderId__c": "A-10001",
+    "Status__c": "Submitted",
+    "Source__c": "MCP"
+  }
+}
+```
+
+Publish multiple events in one call:
+
+```json
+{
+  "targetOrg": "DEFAULT_TARGET_ORG",
+  "eventApiName": "Order_Event__e",
+  "events": [
+    {
+      "OrderId__c": "A-10001",
+      "Status__c": "Submitted"
+    },
+    {
+      "OrderId__c": "A-10002",
+      "Status__c": "Submitted"
+    }
+  ]
+}
+```
+
+## `sf_create_platform_event_definition`
+
+Create a platform event definition:
+
+```json
+{
+  "targetOrg": "DEFAULT_TARGET_ORG",
+  "eventApiName": "Order_Event__e",
+  "label": "Order Event",
+  "pluralLabel": "Order Events",
+  "publishBehavior": "PublishAfterCommit",
+  "description": "Publishes order status transitions."
+}
+```
+
+Create with initial custom fields:
+
+```json
+{
+  "targetOrg": "DEFAULT_TARGET_ORG",
+  "eventApiName": "Order_Event__e",
+  "label": "Order Event",
+  "publishBehavior": "PublishImmediately",
+  "fields": [
+    {
+      "fullName": "OrderId",
+      "label": "Order Id",
+      "type": "Text",
+      "length": 50,
+      "required": true
+    },
+    {
+      "fullName": "Amount",
+      "label": "Amount",
+      "type": "Number",
+      "precision": 18,
+      "scale": 2
+    }
+  ]
+}
+```
+
 ## `sf_whoami`
 
 Get current org identity and connection context:
