@@ -28,10 +28,12 @@ Salesforce MCP Pro currently provides tool categories for:
 - Record CRUD and upsert operations
 - Live Salesforce skill discovery from `forcedotcom/sf-skills` (including Flow and OmniStudio-focused skills)
 - Live LWC recipe discovery from `trailheadapps/lwc-recipes`
+- Trailhead catalog search and content fetch via public Trailhead MCP
 - Playwright-based UI automation for non-API tasks, including tooling to build automated test flows (with reusable flow definitions)
 - Version-control insights for Git-backed Salesforce projects
 
 Use your MCP client’s tool browser to see the current live tool catalog.
+Trailhead-prefixed tools (`sf_trailhead_*`) call the external Trailhead MCP endpoint and return Trailhead server capabilities/content, not the full local Salesforce MCP Pro tool catalog.
 
 ## Requirements
 
@@ -106,6 +108,7 @@ Key environment variables:
 - CRUD examples: `docs/crud-examples.md`
 - Skills discovery examples: `docs/skills-examples.md`
 - LWC recipes examples: `docs/lwc-recipes-examples.md`
+- Trailhead examples: `docs/trailhead-examples.md`
 - UI automation roadmap: `docs/ui-roadmap.md`
 - UI automation examples: `docs/ui-examples.md`
 - Version control examples: `docs/version-control-examples.md`
