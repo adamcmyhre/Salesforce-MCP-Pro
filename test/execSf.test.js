@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   buildSfExecInvocation,
   execSfJson,
+  execSfText,
   resetExecFileForTests,
   setExecFileForTests,
   SfCommandError,
@@ -42,6 +43,23 @@ test("execSfJson throws SfCommandError for invalid json", async () => {
 
   await assert.rejects(() => execSfJson(["org", "list"]), SfCommandError);
   resetExecFileForTests();
+});
+
+test("execSfText keeps human output when the CLI exits non-zero", async () => {
+  setExecFileForTests((file, args, options, callback) => {
+    const error = new Error("Command failed");
+    error.code = 100;
+    callback(error, "=== Apex Code Coverage by Class\n", "");
+  });
+
+  try {
+    const result = await execSfText(["apex", "test", "run", "-c", "-r", "human"]);
+    assert.equal(result.exitCode, 100);
+    assert.match(result.stdout, /Apex Code Coverage by Class/);
+    assert.equal(result.timedOut, false);
+  } finally {
+    resetExecFileForTests();
+  }
 });
 
 test("buildSfExecInvocation wraps Windows cmd shims for Node execFile", () => {
